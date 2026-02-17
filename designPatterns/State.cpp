@@ -60,12 +60,19 @@ AudioPlayer::AudioPlayer() : currentState(std::make_unique<StoppedState>()) {}
 void AudioPlayer::play()
 {
 	currentState->play();
-	currentState.reset(new PlayingState());
+
+	if (dynamic_cast<PausedState*>(currentState.get()))
+	{
+		currentState.reset(new PlayingState());
+	}
 };
 void AudioPlayer::pause()
 {
 	currentState->pause();
-	currentState.reset(new PausedState());
+	if (dynamic_cast<PlayingState*>(currentState.get()))
+	{
+		currentState.reset(new PausedState());
+	}
 };
 void AudioPlayer::next()
 {
